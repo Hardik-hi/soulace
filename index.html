@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<!--SOULACE an experiment using ThreeJS-->
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Soulace-An escape...</title>
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+            .intro{
+                position:absolute;
+                margin:0;
+                z-index:100;
+                height:100vh;
+                width:100vw;
+                background-color:#1d1d1cad;
+                text-align:center;
+                box-sizing: border-box;
+                display: block;
+                
+            }
+            .intro h1{
+                margin:38vh auto 0vh;
+                font-size:10vw;
+                font-family:'Raleway',Sans-serif;
+                color:white;
+                letter-spacing: 2vw;
+                box-sizing: border-box;
+                font-weight: bold;
+                
+            }
+            .intro h2{
+                
+                font-size: 2vw;
+                font-family: 'Raleway',Sans-serif;
+                color:white;
+                font-style: italic;
+                font-weight: 10 ;
+            }
+            .intro input{
+                height:6vh;
+                width:10vw;
+                position: relative;
+                margin:3vh auto;
+                font-size:1.5vw;
+                font-family: 'Raleway',sans-serif;
+                color:white;
+                background-color: black;
+                border:none;
+                outline:none;
+            }
+            #credits{
+                font-family: 'Raleway',Sans-serif;
+                font-size:1vw;
+                color:white;
+                margin:10vh auto 0;
+                text-align:center;
+                
+            }
+            a:link,a:visited{
+                color:yellow;
+                text-decoration:none;
+            }
+        @media only screen and (max-width:500px){
+            .intro h1{
+                font-size:9vh;
+            }
+            .intro h2{
+                font-size:2vh;
+            }
+            .intro input{
+                font-size:1.5vh; 
+                height:8vw;
+                width:12vh;  
+            }
+            #credits{
+                font-size:3vw;
+                margin:25vh auto 0;  
+            }
+		</style>
+	</head>
+	<body>
+      
+                
+        <script type="module">
+            
+            import * as THREE from 'https://unpkg.com/three@0.121.1/build/three.module.js';
+            import { OrbitControls } from 'https://unpkg.com/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+        
+        function initialise_scenes(){
+            let scene=new THREE.Scene();
+            let camera= new THREE.PerspectiveCamera(55,window.innerWidth/window.innerHeight,45,3000);
+            camera.position.set(-200,-200,-700);
+            let renderer= new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(window.innerWidth,window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            
+            
+            let controls= new OrbitControls(camera,renderer.domElement);
+            controls.addEventListener('change',renderer);
+             controls.minDistance=100;
+            controls.maxDistance=500; 
+
+            //adding the materials
+            let materials=[];
+            let texture_negx= new THREE.TextureLoader().load('mount/negx.jpg');
+            let texture_negy= new THREE.TextureLoader().load('mount/negy.jpg');
+            let texture_negz= new THREE.TextureLoader().load('mount/negz.jpg');
+            let texture_posx= new THREE.TextureLoader().load('mount/posx.jpg');
+            let texture_posy= new THREE.TextureLoader().load('mount/posy.jpg');
+            let texture_posz= new THREE.TextureLoader().load('mount/posz.jpg');
+            
+            materials.push(new THREE.MeshBasicMaterial({map:texture_posx}));
+            materials.push(new THREE.MeshBasicMaterial({map:texture_negx}));
+
+            materials.push(new THREE.MeshBasicMaterial({map:texture_posy}));
+            materials.push(new THREE.MeshBasicMaterial({map:texture_negy}));
+
+            materials.push(new THREE.MeshBasicMaterial({map:texture_posz}));
+            materials.push(new THREE.MeshBasicMaterial({map:texture_negz}));
+           
+            for(let i=0;i<6;i++)
+                materials[i].side=THREE.BackSide;
+           
+
+
+            let geometry= new THREE.BoxGeometry(1000,1000,1000);
+            
+            let cube= new THREE.Mesh(geometry,materials);
+
+            scene.add(cube); // added at (0,0,0) by default
+            
+           
+            //rendering using requestAnimationFrame
+
+            function animate(){
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+
+        }
+        initialise_scenes();
+        </script>
+    <script>
+        let opac=10,x;
+        
+        
+        function enter_in(){
+       
+        x=setInterval(fade_out,80);
+        document.getElementById('backsong').play();
+        }   
+        function fade_out(){
+            if(opac==0)
+            {
+               
+                document.getElementsByClassName('intro')[0].style.display="none";
+                clearInterval(x);
+                
+            }
+            else{
+                opac--;
+                document.getElementsByClassName('intro')[0].style.opacity=opac/10;
+            }
+        }
+    </script>
+    <audio loop id="backsong">
+        <source src="mount.mp3" type="audio/mpeg">
+        Sorry! Your browser does not support audio
+    </audio>
+    <div class="intro">
+        <h1>SOULACE</h1>
+        <h2>A glimpse into nature...</h2>
+        <input type="button" value="Start" onclick="enter_in()">
+        <div id="credits">
+            Special thanks to <a href="http://www.humus.name/">Emil Perrson</a> for images
+        </div>
+    </div>
+
+	</body>
+</html>
